@@ -7,7 +7,7 @@
  */
 -->
 <template>
-  <div class="gantt-elastic__main-view" :style="root.style('main-view')">
+  <div class="gantt-elastic__main-view" :style="root.style('main-view', root.state.style)">
     <div
       class="gantt-elastic__svg-container-wrapper"
       :style="root.style('svg-container-wrapper',{height:root.state.height+'px'})"

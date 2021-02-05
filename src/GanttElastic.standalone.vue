@@ -7,23 +7,28 @@
  */
 -->
 <template>
-  <gantt-elastic :tasks="tasks" :options="options">
+  <gantt-elastic :tasks="tasks" :options="options" ref="ganttElastic">
     <gantt-header slot="header"></gantt-header>
     <gantt-footer slot="footer"></gantt-footer>
   </gantt-elastic>
 </template>
 <script>
-import GanttElastic from './GanttElastic.vue';
+import GanttElastic from "./GanttElastic.vue";
 export default {
   components: {
-    'gantt-header': { template: `` },
-    'gantt-elastic': GanttElastic,
-    'gantt-footer': { template: `` }
+    "gantt-header": { template: `` },
+    "gantt-elastic": GanttElastic,
+    "gantt-footer": { template: `` },
   },
-  props: ['header', 'footer'],
+  props: ["header", "footer"],
   data: {
     tasks: [],
     options: {},
+  },
+  methods: {
+    setSacle(sacle = 21) {
+      this.$refs.ganttElastic.onTimeZoomChange(sacle);
+    },
   },
 };
 </script>

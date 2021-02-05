@@ -13,8 +13,8 @@
     ref="chart"
     x="0"
     y="0"
-    :width="getWidth+'px'"
-    :height="getHeight+'px'"
+    :width="getWidth + 'px'"
+    :height="getHeight + 'px'"
     xmlns="http://www.w3.org/2000/svg"
   >
     <calendar></calendar>
@@ -23,7 +23,7 @@
         xmlns="http://www.w3.org/1999/xhtml"
         class="gantt-elastic__chart-graph"
         ref="chartGraph"
-        :style="root.style('chart-graph',{height:'100%'})"
+        :style="root.style('chart-graph', { height: '100%' })"
       >
         <svg
           class="gantt-elastic__chart"
@@ -31,8 +31,8 @@
           ref="chart"
           x="0"
           y="0"
-          :width="getWidth+'px'"
-          :height="root.state.allVisibleTasksHeight+'px'"
+          :width="getWidth + 'px'"
+          :height="root.state.allVisibleTasksHeight + 'px'"
           xmlns="http://www.w3.org/2000/svg"
         >
           <days-highlight></days-highlight>
@@ -46,6 +46,7 @@
             :key="task.id"
             v-show="task.visible"
           >
+            <title>{{ task.tips }}</title>
             <component :task="task" :is="task.type"></component>
           </g>
         </svg>
@@ -70,18 +71,18 @@ export default {
     Task,
     Milestone,
     Project,
-    DaysHighlight
+    DaysHighlight,
   },
   inject: ["root"],
-  data () {
+  data() {
     return {
-      moving: false
+      moving: false,
     };
   },
   /**
    * Mounted
    */
-  mounted () {
+  mounted() {
     this.root.state.refs.chart = this.$refs.chart;
     this.root.state.refs.chartGraph = this.$refs.chartGraph;
   },
@@ -92,7 +93,7 @@ export default {
      *
      * @returns {number}
      */
-    getWidth () {
+    getWidth() {
       const state = this.root.state;
       return state.width;
     },
@@ -102,7 +103,7 @@ export default {
      *
      * @returns {number}
      */
-    getHeight () {
+    getHeight() {
       const state = this.root.state;
       return state.height;
     },
@@ -112,9 +113,9 @@ export default {
      *
      * @returns {string}
      */
-    getViewBox () {
+    getViewBox() {
       return `0 0 ${Math.round(this.getWidth)} ${this.root.state.allVisibleTasksHeight}`;
-    }
+    },
   },
 };
 </script>

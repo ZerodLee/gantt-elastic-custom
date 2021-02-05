@@ -1,224 +1,741 @@
 <!DOCTYPE html>
 <html charset="utf-8">
-<head>
-  <meta charset="utf-8">
-  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
-  <title>Gangtt-Elastic Demo</title>
-  <script src="../dist/bundle.js"></script>
-  <script src="../dist/Header.umd.js"></script>
-</head>
-<body>
-  <div id="app" style="width:100%;height:100%;"></div>
-  <script>
-    function getDate(hours) {
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentDay = currentDate.getDate();
-      const timeStamp = new Date(`${currentYear}-${currentMonth}-${currentDay} 00:00:00`).getTime();
-      return new Date(timeStamp + hours * 60 * 60 * 1000);
-    }
-
-    const tasks = [
-      {
-        id: 1,
-        label: 'Make some noise',
-        user: '<a href="https://www.google.com/search?q=John+Doe" target="_blank" style="color:#0077c0;">John Doe</a>',
-        start: getDate(-24 * 5),
-        duration: 5 * 24 * 60 * 60,
-        progress: 85,
-        type: 'project'
-      }, {
-        id: 2,
-        label: 'With great power comes great responsibility',
-        user: '<a href="https://www.google.com/search?q=Peter+Parker" target="_blank" style="color:#0077c0;">Peter Parker</a>',
-        parentId: 1,
-        start: getDate(-24 * 4),
-        duration: 4 * 24 * 60 * 60,
-        progress: 50,
-        type: 'milestone',
-        style: {
-          base: {
-            fill: '#1EBC61',
-            stroke: '#0EAC51'
-          },
-        },
-      }, {
-        id: 3,
-        label: 'Courage is being scared to death, but saddling up anyway.',
-        user: '<a href="https://www.google.com/search?q=John+Wayne" target="_blank" style="color:#0077c0;">John Wayne</a>',
-        parentId: 2,
-        start: getDate(-24 * 3),
-        duration: 2 * 24 * 60 * 60,
-        progress: 100,
-        type: 'task'
-      }, {
-        id: 4,
-        label: 'Put that toy AWAY!',
-        user: '<a href="https://www.google.com/search?q=Clark+Kent" target="_blank" style="color:#0077c0;">Clark Kent</a>',
-        start: getDate(-24 * 2),
-        duration: 2 * 24 * 60 * 60,
-        progress: 50,
-        type: 'task',
-        dependentOn: [3]
-      }, {
-        id: 5,
-        label: 'One billion, gajillion, fafillion... shabadylu...mil...shabady......uh, Yen.',
-        user: '<a href="https://www.google.com/search?q=Austin+Powers" target="_blank" style="color:#0077c0;">Austin Powers</a>',
-        parentId: 4,
-        start: getDate(0),
-        duration: 2 * 24 * 60 * 60,
-        progress: 10,
-        type: 'milestone',
-        style: {
-          base: {
-            fill: '#0287D0',
-            stroke: '#0077C0'
-          }
-        },
-      }, {
-        id: 6,
-        label: 'Butch Mario and the Luigi Kid',
-        user: '<a href="https://www.google.com/search?q=Mario+Bros" target="_blank" style="color:#0077c0;">Mario Bros</a>',
-        parentId: 5,
-        start: getDate(24),
-        duration: 1 * 24 * 60 * 60,
-        progress: 50,
-        type: 'task',
-        style: {
-          base: {
-            fill: '#8E44AD',
-            stroke: '#7E349D'
-          },
-        },
-      }, {
-        id: 7,
-        label: 'Devon, the old man wanted me, it was his dying request',
-        user: '<a href="https://www.google.com/search?q=Knight+Rider" target="_blank" style="color:#0077c0;">Knight Rider</a>',
-        parentId: 2,
-        dependentOn: [6],
-        start: getDate(24 * 2),
-        duration: 4 * 60 * 60,
-        progress: 20,
-        type: 'task'
-      }, {
-        id: 8,
-        label: 'Hey, Baby! Anybody ever tell you I have beautiful eyes?',
-        user: '<a href="https://www.google.com/search?q=Johhny+Bravo" target="_blank" style="color:#0077c0;">Johhny Bravo</a>',
-        parentId: 7,
-        dependentOn: [7],
-        start: getDate(24 * 3),
-        duration: 1 * 24 * 60 * 60,
-        progress: 0,
-        type: 'task'
-      }, {
-        id: 9,
-        label: 'This better be important, woman. You are interrupting my very delicate calculations.',
-        user: '<a href="https://www.google.com/search?q=Dexter\'s+Laboratory" target="_blank" style="color:#0077c0;">Dexter\'s Laboratory</a>',
-        parentId: 8,
-        dependentOn: [
-          8, 7
-        ],
-        start: getDate(24 * 4),
-        duration: 4 * 60 * 60,
-        progress: 20,
-        type: 'task',
-        style: {
-          base: {
-            fill: '#8E44AD',
-            stroke: '#7E349D'
-          },
-        },
-      }, {
-        id: 10,
-        label: 'current task',
-        user: '<a href="https://www.google.com/search?q=Johnattan+Owens" target="_blank" style="color:#0077c0;">Johnattan Owens</a>',
-        start: getDate(24 * 5),
-        duration: 24 * 60 * 60,
-        progress: 0,
-        type: 'task'
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Gangtt-Elastic Demo</title>
+    <script src="../dist/bundle.js"></script>
+    <script src="../dist/Header.umd.js"></script>
+  </head>
+  <body>
+    <div id="app" style="width:100%;height:100%;"></div>
+    <script>
+      function getDate(hours) {
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentDay = currentDate.getDate();
+        const timeStamp = new Date(`${currentYear}-${currentMonth}-${currentDay} 00:00:00`).getTime();
+        return new Date(timeStamp + hours * 60 * 60 * 1000);
       }
-    ];
 
-    const options = {
-      title: {
-        label: '标题',
-        html: false,
-      },
-      taskList: {
-        columns: [
+      const tasks = [
+        {
+          id: 1,
+          label: "Make some noise",
+          user:
+            '<a href="https://www.google.com/search?q=John+Doe" target="_blank" style="color:#0077c0;">John Doe</a>',
+          start: getDate(-24 * 5),
+          duration: 5 * 24 * 60 * 60,
+          progress: 85,
+          type: "project",
+        },
+        {
+          id: 2,
+          label: "With great power comes great responsibility",
+          user:
+            '<a href="https://www.google.com/search?q=Peter+Parker" target="_blank" style="color:#0077c0;">Peter Parker</a>',
+          parentId: 1,
+          start: getDate(-24 * 4),
+          duration: 4 * 24 * 60 * 60,
+          progress: 50,
+          type: "milestone",
+          style: {
+            base: {
+              fill: "#1EBC61",
+              stroke: "#0EAC51",
+            },
+          },
+        },
+        {
+          id: 3,
+          label: "Courage is being scared to death, but saddling up anyway.",
+          user:
+            '<a href="https://www.google.com/search?q=John+Wayne" target="_blank" style="color:#0077c0;">John Wayne</a>',
+          parentId: 2,
+          start: getDate(-24 * 3),
+          duration: 2 * 24 * 60 * 60,
+          progress: 100,
+          type: "task",
+        },
+        {
+          id: 4,
+          label: "Put that toy AWAY!",
+          user:
+            '<a href="https://www.google.com/search?q=Clark+Kent" target="_blank" style="color:#0077c0;">Clark Kent</a>',
+          start: getDate(-24 * 2),
+          duration: 2 * 24 * 60 * 60,
+          progress: 50,
+          type: "task",
+          dependentOn: [3],
+        },
+        {
+          id: 5,
+          label: "One billion, gajillion, fafillion... shabadylu...mil...shabady......uh, Yen.",
+          user:
+            '<a href="https://www.google.com/search?q=Austin+Powers" target="_blank" style="color:#0077c0;">Austin Powers</a>',
+          parentId: 4,
+          start: getDate(0),
+          duration: 2 * 24 * 60 * 60,
+          progress: 10,
+          type: "milestone",
+          style: {
+            base: {
+              fill: "#0287D0",
+              stroke: "#0077C0",
+            },
+          },
+        },
+        {
+          id: 6,
+          label: "Butch Mario and the Luigi Kid",
+          user:
+            '<a href="https://www.google.com/search?q=Mario+Bros" target="_blank" style="color:#0077c0;">Mario Bros</a>',
+          parentId: 5,
+          start: getDate(24),
+          duration: 1 * 24 * 60 * 60,
+          progress: 50,
+          type: "task",
+          style: {
+            base: {
+              fill: "#8E44AD",
+              stroke: "#7E349D",
+            },
+          },
+        },
+        {
+          id: 7,
+          label: "Devon, the old man wanted me, it was his dying request",
+          user:
+            '<a href="https://www.google.com/search?q=Knight+Rider" target="_blank" style="color:#0077c0;">Knight Rider</a>',
+          parentId: 2,
+          dependentOn: [6],
+          start: getDate(24 * 2),
+          duration: 4 * 60 * 60,
+          progress: 20,
+          type: "task",
+        },
+        {
+          id: 8,
+          label: "Hey, Baby! Anybody ever tell you I have beautiful eyes?",
+          user:
+            '<a href="https://www.google.com/search?q=Johhny+Bravo" target="_blank" style="color:#0077c0;">Johhny Bravo</a>',
+          parentId: 7,
+          dependentOn: [7],
+          start: getDate(24 * 3),
+          duration: 1 * 24 * 60 * 60,
+          progress: 0,
+          type: "task",
+        },
+        {
+          id: 9,
+          label: "This better be important, woman. You are interrupting my very delicate calculations.",
+          user:
+            '<a href="https://www.google.com/search?q=Dexter\'s+Laboratory" target="_blank" style="color:#0077c0;">Dexter\'s Laboratory</a>',
+          parentId: 8,
+          dependentOn: [8, 7],
+          start: getDate(24 * 4),
+          duration: 4 * 60 * 60,
+          progress: 20,
+          type: "task",
+          style: {
+            base: {
+              fill: "#8E44AD",
+              stroke: "#7E349D",
+            },
+          },
+        },
+        {
+          id: 10,
+          label: "current task",
+          user:
+            '<a href="https://www.google.com/search?q=Johnattan+Owens" target="_blank" style="color:#0077c0;">Johnattan Owens</a>',
+          start: getDate(24 * 5),
+          duration: 24 * 60 * 60,
+          progress: 0,
+          type: "task",
+        },
+      ];
+
+      const taskDemo = {
+        scale: "fourHour",
+        rows: [
           {
-            id: 1,
-            label: 'ID',
-            value: 'id',
-            width: 40
-          }, {
-            id: 2,
-            label: '说明',
-            value: 'label',
-            width: 200,
-            expander: true
-          }, {
-            id: 3,
-            label: '指派给',
-            value: 'user',
-            width: 130,
-            html: true
-          }, {
-            id: 3,
-            label: '开始日期',
-            value: (task) => task.startDate.format('YYYY-MM-DD'),
-            width: 78
-          }, {
-            id: 4,
-            label: '类型',
-            value: 'type',
-            width: 68
-          }, {
-            id: 5,
-            label: '%',
-            value: 'progress',
-            width: 35,
-            style: {
-              "task-list-header-label": {
-                'text-align': 'center',
-                'width': '100%'
+            parent: "001",
+            name: "TO-20200922-00000012",
+            id: 986302164395623424,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000012",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP001",
+                id: 986302164395623424,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "",
               },
-              "task-list-item-value-container": {
-                'text-align': 'center',
+            ],
+          },
+          {
+            parent: "001",
+            name: "TO-20200922-00000013",
+            id: 986302164395623425,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000013",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP002",
+                id: 986302164395623425,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "001",
+            name: "TO-20200922-00000014",
+            id: 986302164395623426,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000014",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP003",
+                id: 986302164395623426,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "001",
+            name: "TO-20200922-00000015",
+            id: 986302164395623427,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000015",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP004",
+                id: 986302164395623427,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "001",
+            name: "TO-20200922-00000016",
+            id: 986302164395623428,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000016",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP005",
+                id: 986302164395623428,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "001",
+            name: "TO-20200922-00000017",
+            id: 986302322546049024,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000017",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP005",
+                id: 986302322546049024,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "WC-Y001",
+              },
+            ],
+          },
+          {
+            parent: "001",
+            name: "TO-20200922-00000018",
+            id: 986302417496704000,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000018",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP002",
+                id: 986302417496704000,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "test002",
+              },
+            ],
+          },
+          {
+            parent: "001",
+            name: "TO-20200922-00000019",
+            id: 986302541597770752,
+            parentId: 986302122645520384,
+            tasks: [
+              {
+                movable: false,
+                color: "#DC5C79",
+                name: "TO-20200922-00000019",
+                from: "2020-09-22 20:05:30",
+                opCode: "OP001",
+                id: 986302541597770752,
+                to: "2020-09-23 20:05:30",
+                workCellCode: "test001",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000001",
+            id: 990541326728560640,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000001",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP001",
+                id: 990541326728560640,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000002",
+            id: 990541326728560641,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000002",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP002",
+                id: 990541326728560641,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000003",
+            id: 990541326728560642,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000003",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP003",
+                id: 990541326728560642,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000004",
+            id: 990541326728560643,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000004",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP004",
+                id: 990541326728560643,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000005",
+            id: 990541326728560644,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000005",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP005",
+                id: 990541326728560644,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000006",
+            id: 990541770385261568,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000006",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP005",
+                id: 990541770385261568,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "WC-Y001",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000007",
+            id: 990543526045417472,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000007",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP002",
+                id: 990543526045417472,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "test002",
+              },
+            ],
+          },
+          {
+            parent: "A",
+            name: "TO-20200928-00000008",
+            id: 990543670186869760,
+            parentId: 990540874238656512,
+            tasks: [
+              {
+                movable: false,
+                color: "#7FC562",
+                name: "TO-20200928-00000008",
+                from: "2020-09-28 16:26:19",
+                opCode: "OP001",
+                id: 990543670186869760,
+                to: "2020-09-28 18:26:19",
+                workCellCode: "test001",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000009",
+            id: 990545784359354368,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000009",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP001",
+                id: 990545784359354368,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000010",
+            id: 990545784359354369,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000010",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP002",
+                id: 990545784359354369,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000011",
+            id: 990545784359354370,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000011",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP003",
+                id: 990545784359354370,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000012",
+            id: 990545784359354371,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000012",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP004",
+                id: 990545784359354371,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000013",
+            id: 990545784359354372,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000013",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP005",
+                id: 990545784359354372,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000014",
+            id: 990545914894484480,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000014",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP005",
+                id: 990545914894484480,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "WC-Y001",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000015",
+            id: 990545994854694912,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000015",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP002",
+                id: 990545994854694912,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "test002",
+              },
+            ],
+          },
+          {
+            parent: "B",
+            name: "TO-20200928-00000016",
+            id: 990546106767114240,
+            parentId: 990545746920996864,
+            tasks: [
+              {
+                movable: false,
+                color: "#9D5ED6",
+                name: "TO-20200928-00000016",
+                from: "2020-09-28 16:36:53",
+                opCode: "OP001",
+                id: 990546106767114240,
+                to: "2020-09-28 23:36:53",
+                workCellCode: "test001",
+              },
+            ],
+          },
+          { name: "demo", id: 9863021226455203,  },
+          { name: "001", from: "2020-09-22 20:05:30", id: 986302122645520384, to: "2020-09-23 20:05:30" },
+          { name: "A", from: "2020-09-28 16:26:19", id: 990540874238656512, to: "2020-09-28 18:26:19" },
+          { name: "B", from: "2020-09-28 16:36:53", id: 990545746920996864, to: "2020-09-28 23:36:53" },
+        ],
+      };
+      var translateGanttRows = function(taskList) {
+        let tempList = taskList.map(task => {
+          const theTask = task.tasks && task.tasks[0];
+          return task.parentId
+            ? {
+                id: task.id+"" ,
+                parentId: task.parentId+"",
+                label: task.name,
+                start: theTask.from,
+                end: theTask.to,
+                tips:
+                  "工位:" +
+                  theTask.workCellCode +
+                  "\n" +
+                  "工序:" +
+                  theTask.opCode +
+                  "\n" +
+                  "时间:" +
+                  theTask.from +
+                  "-" +
+                  theTask.to,
+                duration: (new Date(theTask.to).getTime() - new Date(theTask.from).getTime()) / 1000,
+                progress: 100,
+                type: "milestone",
+                percent: 100,
+                style: {
+                  base: {
+                    fill: theTask.color,
+                  },
+                },
               }
-            }
-          }
-        ]
-      },
-      locale: {
-        code: 'en',
-        'Now': 'Now',
-        'X-Scale': 'Zoom-X',
-        'Y-Scale': 'Zoom-Y',
-        'Task list width': 'Task list',
-        'Before/After': 'Expand',
-        'Display task list': 'Task list'
-      },
-    };
-    GanttElastic.component.components['gantt-header'] = Header;
-    const app = GanttElastic.mount({
-      el: '#app', // <- your container id
-      tasks: tasks,
-      options: options,
-      ready(ganttInstance) {
-        console.log('ready!', ganttInstance);
-        ganttInstance.$on('chart-task-click', ({ event, data }) => {
-          console.log('task clicked', { event, data });
-        })
-        ganttInstance.$on('chart-task-mouseover', ({ event, data }) => {
-          console.log('task mouse over', { event, data })
-        })
-        ganttInstance.$on('times-timeZoom-change', (ev) => {
-          console.log('time zoom changed!', ev)
-        })
-      }
-    });
-  </script>
-</body>
+            : {
+                id: task.id + "",
+                label: task.name,
+                start: task.from,
+                end: task.to,
+                progress: 100,
+                duration: (new Date(task.to).getTime() - new Date(task.from).getTime()) / 1000,
+                type: "project",
+                percent: 100,
+              };
+        });
+        console.log(tempList)
+        return tempList;
+      };
+      const options = {
+        //header: { style: { display: "none" } },
+        title: {
+          label: "标题",
+          html: false,
+          // style:{display:"none"}
+        },
+        taskList: {
+          columns: [
+            {
+              id: 1,
+              label: "ID",
+              value: "id",
+              width: 40,
+              style: { "task-list-header-column": { "background-color": "#f4f4f4" } },
+            },
+            {
+              id: 2,
+              label: "说明",
+              value: "label",
+              width: 200,
+            expander: true
+            },
+            {
+              id: 3,
+              label: "指派给",
+              value: "user",
+              width: 130,
+              html: true,
+            },
+            {
+              id: 3,
+              label: "开始日期",
+              value: task => task.startDate.format("YYYY-MM-DD"),
+              width: 78,
+            },
+            {
+              id: 4,
+              label: "类型",
+              value: "type",
+              width: 68,
+            },
+            {
+              id: 5,
+              label: "%",
+              value: "progress",
+              width: 35,
+              style: {
+                "task-list-header-label": {
+                  "text-align": "center",
+                  width: "100%",
+                },
+                "task-list-item-value-container": {
+                  "text-align": "center",
+                },
+              },
+            },
+          ],
+        },
+        scope:{
+          before:0,
+        },
+        times:{
+          timeZoom:21
+        },
+        locale: {
+          code: "en",
+          Now: "Now",
+          "X-Scale": "Zoom-X",
+          "Y-Scale": "Zoom-Y",
+          "Task list width": "Task list",
+          "Before/After": "Expand",
+          "Display task list": "Task list",
+        },
+      };
+      GanttElastic.component.components["gantt-header"] = Header;
+      let app = GanttElastic.mount({
+        el: "#app", // <- your container id
+        tasks: translateGanttRows(taskDemo.rows),
+        options: options,
+        ready(ganttInstance) {
+          console.log("ready!", ganttInstance);
+          ganttInstance.$on("chart-task-click", ({ event, data }) => {
+            console.log("task clicked", { event, data });
+          });
+          ganttInstance.$on("chart-task-mouseover", ({ event, data }) => {
+            console.log("task mouse over", { event, data });
+          });
+          ganttInstance.$on("times-timeZoom-change", ev => {
+            console.log("time zoom changed!", ev);
+          });
+        },
+      });
+    </script>
+  </body>
 </html>

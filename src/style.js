@@ -65,7 +65,7 @@ export default {
   "calendar-wrapper": {
     "user-select": "none"
   },
-  "calendar": { "width": "100%", "height": "100%", "background": "#f3f5f7", "border-color": "#f3f5f7" },
+  "calendar": { "width": "100%", "height": "100%", "background": "#f4f4f4", "border-color": "#f4f4f4" },
   "calendar-row": { "fill": "transparent", "stroke": "#dadada", "stroke-width": 0.5 },
   "calendar-row--month": {},
   "calendar-row--day": {},
@@ -85,7 +85,7 @@ export default {
     "border-right": "none",
     "box-sizing": "border-box",
     "display": "flex",
-    "background": "#f3f5f7",
+    "background": "#f4f4f4", // "#f3f5f7"
     "border-color": "transparent"
   },
   "task-list-expander-wrapper": {
